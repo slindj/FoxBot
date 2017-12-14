@@ -1,3 +1,4 @@
+const Geodesy = require('geodesy')
 var Client = require('node-rest-client').Client;
 
 
@@ -9,7 +10,9 @@ exports.list = function(bot, to) {
     console.log(text)
     bot.say(to, "Tracking the fol locations")
     item_list.forEach( function(element) {
-      bot.say(to, "Name: " + element.name + ", Lat: " + element.lat.toString() + ", Lon: " + element.lon.toString() )
+      var ll = new Geodesy.LatLonEllipsoidal(element.lat,element.lon)
+      var mgrs = ll.toUtm().toMgrs()    
+      bot.say(to, "Name: " + element.name + ", Grid: " + mgrs.toString() )
     })
 
   })
