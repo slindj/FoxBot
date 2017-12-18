@@ -8,6 +8,11 @@ var config = {
 var locstat_controller = require('./controllers/locations')
 var bot = new irc.Client(config.server, config.botName, {channels: config.channels});
 
+function botSay(to,message) {
+  bot.say(to,message);
+  
+}
+
 bot.addListener('message#', function (from, to, message) {
    switch(message.split(' ')[0]) {
      case "LOCSTAT:":
@@ -23,7 +28,9 @@ bot.addListener('message#', function (from, to, message) {
      case "UNHIDE:":
       break;
      case "LIST:":
-      locstat_controller.list(bot,to)
+      locstat_controller.list(function(message) {
+        bot.say(to,message)
+      })
       break;
      
    }
