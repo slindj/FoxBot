@@ -2,11 +2,11 @@ var irc = require("irc");
 
 var config = {
     channels: ["#foxnet"],
-    server: "irc.freenode.net",
+    server: "hitchcock.freenode.net",
     botName: "FoxiBot24"
 }
 var locstat_controller = require('./controllers/locations')
-var bot = new irc.Client(config.server, config.botName, {channels: config.channels});
+var bot = new irc.Client(config.server, config.botName, {debug: true, channels: config.channels, floodProtection: true, floodProtectionDelay: 500});
 
 function botSay(to,message) {
   bot.say(to,message);
@@ -15,19 +15,28 @@ function botSay(to,message) {
 
 bot.addListener('message#', function (from, to, message) {
    switch(message.split(' ')[0]) {
-     case "LOCSTAT:":
+     case "!help":
+      bot.say(to,"I know the fol commands:");
+      bot.say(to,"\"!help\" <- shows this list of commands");
+      bot.say(to,"\"!list\" <- shows a list of active tracked locations");
+      bot.say(to,"\"!locstat N GRIRD\" <- send locstat for tracked element id of N");
+      bot.say(to,"I'm learning new commands everyday!");
+      break;
+     case "!locstat":
       console.log(from + ' => ' + to + ': ' + message);
-      bot.say(to,  "I don't know how to do that yet, but I'm learning new things everyday");
+     locstat_controller.locstat(message, function(reply) {
+       bot.say(to,reply)
+     })
       break;
-     case "ADD:":
+     case "!add":
       break;
-     case "REMOVE:":
+     case "!remove":
       break;
-     case "HIDE:":
+     case "!hide":
       break;
-     case "UNHIDE:":
+     case "!unhide":
       break;
-     case "LIST:":
+     case "!list":
       locstat_controller.list(function(message) {
         bot.say(to,message)
       })
