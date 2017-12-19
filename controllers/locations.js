@@ -2,9 +2,14 @@ const Geodesy = require('geodesy')
 var Client = require('node-rest-client').Client;
 
 exports.locstat = function(message, callback) {
+  var parsed = message.match(/!locstat \d+ ([A-Za-z0-9\s]{12,})/i)
+  if (parsed == null) {
+    callback("There was a problem with your locstat command")
+    return;
+  }
   var args = {
     path: {id: parseInt(message.split(' ')[1]),
-    mgrs: message.split(' ')[2],
+    mgrs: parsed[1].replace(/\s/g, ''),
     time: Math.round(new Date().getTime()/1000)}
   }
   console.log(args)
@@ -13,7 +18,7 @@ exports.locstat = function(message, callback) {
     //console.log(data);
     //console.log(response);
     if (response.statusCode == '200') {
-      callback("Locstat entered.")
+      callback("Locstat accepted.")
     }
     else
     {
