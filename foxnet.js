@@ -2,7 +2,7 @@ var irc = require("irc");
 
 var config = {
     channels: ["#foxnet"],
-    server: "hitchcock.freenode.net",
+    server: "irc.efnet.org",
     botName: "FoxiBot24"
 }
 var locstat_controller = require('./controllers/locations')
@@ -19,7 +19,10 @@ bot.addListener('message#', function (from, to, message) {
       bot.say(to,"I know the fol commands:");
       bot.say(to,"\"!help\" <- shows this list of commands");
       bot.say(to,"\"!list\" <- shows a list of active tracked locations");
-      bot.say(to,"\"!locstat N GRIRD\" <- send locstat for tracked element id of N");
+      boy.say(to,"\"!list_all\" <- shows a list of all tracked locations, even if they're hidden/inactive")
+      bot.say(to,"\"!locstat N GRID\" <- send locstat for tracked element id of N");
+      boy.say(to,"\"!hide N\" <- hide/inactivate a tracked element id of N");
+      boy.say(to,"\"!unhide N\" <- unhide/activate a tracked element id of N");
       bot.say(to,"I'm learning new commands everyday!");
       break;
      case "!locstat":
@@ -33,11 +36,22 @@ bot.addListener('message#', function (from, to, message) {
      case "!remove":
       break;
      case "!hide":
+      locstat_controller.hide(message, function(message) {
+        bot.say(to,message)
+      })
       break;
      case "!unhide":
+      locstat_controller.unhide(message, function(message) {
+        bot.say(to,message)
+      })
       break;
      case "!list":
       locstat_controller.list(function(message) {
+        bot.say(to,message)
+      })
+      break;
+     case "!list_all":
+      locstat_controller.list_all(function(message) {
         bot.say(to,message)
       })
       break;
